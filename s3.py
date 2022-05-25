@@ -5,7 +5,7 @@ from botocore.exceptions import ClientError
 class S3Client:
     def __init__(self, session, region_name = "us-east-1"):
         self.client = session.client("s3", region_name=region_name)
-    
+        
     def list_buckets(self):
         response = self.client.list_buckets()
         print('Existing buckets:')
@@ -13,15 +13,13 @@ class S3Client:
         for bucket in response['Buckets']:
             print(f'  {bucket["Name"]}')
 
-# def list_buckets(session):
-#     s3 = session.client('s3')
-#     response = s3.list_buckets()
-
-#     # Output the bucket names
-#     print('Existing buckets:')
-#     print("*" * 30)
-#     for bucket in response['Buckets']:
-#         print(f'  {bucket["Name"]}')
+    def get_bucket_policy(self, name: str):
+        try:            
+            policy = self.client.get_bucket_policy(Bucket=name)
+            print(policy)
+        except ClientError as e:
+            logging.error(e)
+            return False        
 
 
 # s3_resource = boto3.resource('s3')
@@ -56,6 +54,3 @@ class S3Client:
 
 #     return True
 
-# def get_bucket_policy(name: str, session):
-#     s3 = session.client('s3')
-#     return s3.get_bucket_policy(Bucket=name)

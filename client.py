@@ -1,16 +1,34 @@
 import boto3
-from s3 import list_buckets
+from s3 import S3Client
 
 
-# If you try to create a bucket, but another user has already claimed your desired bucket name, your code will fail. Instead of success, you will see the following error: botocore.errorfactory.BucketAlreadyExists.
+bucket_policy = {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "AddPerm",
+                            "Principal": "*",
+                            "Effect": "Allow",
+                            "Action": "s3:GetObject",
+                            
+                        }
+                    ]
+                }
 
-
+                # "Resource": "arn:aws:s3:::www.somethingsimple.io/*"
 def create_boto_session():
     return boto3.Session(profile_name='boto3-dev')
+    
 
 session = create_boto_session()
 
 # create_bucket(session, "werkerpeeper")
-list_buckets(session)
+client = S3Client(session)
+# client.create_bucket("werkerpeeper")
+# client.add_bucket_policy(bucket_policy, "werkerpeeper")
+# client.allow_public_access('werkerpeeper')
+# client.list_buckets()
+client.get_bucket_policy('werkerpeeper')
 # sts = session.client('sts')
 # print(sts.get_caller_identity())
+
